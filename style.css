@@ -1,0 +1,571 @@
+/* 基础样式 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+#game-container {
+    max-width: 400px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+/* 游戏标题 */
+#game-header {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(45deg, #8B4513, #DAA520);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#game-header h1 {
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 14px;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+/* 界面切换 */
+.screen {
+    display: none;
+    padding: 20px;
+    min-height: calc(100vh - 100px);
+}
+
+.screen.active {
+    display: block;
+}
+
+/* 角色创建界面 */
+#character-creation h2 {
+    text-align: center;
+    color: #DAA520;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.story-text {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    border-left: 4px solid #DAA520;
+}
+
+.character-selection h3 {
+    color: #DAA520;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.character-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.character-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.character-card:hover {
+    border-color: #DAA520;
+    background: rgba(218, 165, 32, 0.2);
+    transform: translateY(-2px);
+}
+
+.character-card.selected {
+    border-color: #DAA520;
+    background: rgba(218, 165, 32, 0.3);
+}
+
+.character-card h4 {
+    color: #DAA520;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.character-card p {
+    font-size: 12px;
+    margin-bottom: 3px;
+}
+
+.stats {
+    font-size: 10px !important;
+    color: #cccccc;
+}
+
+.name-input {
+    margin-bottom: 20px;
+}
+
+.name-input label {
+    display: block;
+    margin-bottom: 8px;
+    color: #DAA520;
+}
+
+.name-input input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #DAA520;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    font-size: 16px;
+}
+
+/* 按钮样式 */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #DAA520, #B8860B);
+    color: #000000;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #B8860B, #DAA520);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(218, 165, 32, 0.4);
+}
+
+/* 游戏主界面 */
+#status-bar {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.player-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#player-name-display {
+    font-weight: bold;
+    color: #DAA520;
+}
+
+#player-level {
+    background: #8B4513;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.player-stats {
+    display: grid;
+    gap: 8px;
+}
+
+.stat-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-bar span:first-child {
+    width: 40px;
+    font-size: 12px;
+    color: #cccccc;
+}
+
+.bar {
+    flex: 1;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.3s ease;
+}
+
+.bar-fill.hp {
+    background: linear-gradient(90deg, #ff4444, #ff6666);
+}
+
+.bar-fill.mp {
+    background: linear-gradient(90deg, #4444ff, #6666ff);
+}
+
+.bar span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* 故事区域 */
+#story-area {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    min-height: 200px;
+    border-left: 4px solid #DAA520;
+}
+
+#story-text {
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+/* 选择区域 */
+#choice-area {
+    margin-bottom: 15px;
+}
+
+.choice-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #DAA520;
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.choice-btn:hover {
+    background: rgba(218, 165, 32, 0.3);
+    transform: translateX(5px);
+}
+
+/* 游戏菜单 */
+#game-menu {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 10px 0;
+}
+
+.menu-btn {
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #DAA520;
+    border-radius: 6px;
+    color: #DAA520;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.menu-btn:hover {
+    background: rgba(218, 165, 32, 0.3);
+}
+
+/* 模态框 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    margin: 5% auto;
+    padding: 20px;
+    border: 2px solid #DAA520;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 350px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-content h3 {
+    color: #DAA520;
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #DAA520;
+    padding-bottom: 10px;
+}
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #DAA520;
+}
+
+.close:hover {
+    color: #ffffff;
+}
+
+/* 状态界面 */
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.3);
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+/* 背包界面 */
+#inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.item-slot {
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #DAA520;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.item-slot:hover {
+    background: rgba(218, 165, 32, 0.3);
+}
+
+.item-slot.empty {
+    border-color: rgba(218, 165, 32, 0.3);
+    opacity: 0.5;
+}
+
+/* 武功界面 */
+#skills-list {
+    display: grid;
+    gap: 10px;
+}
+
+.skill-item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #DAA520;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.skill-item:hover {
+    background: rgba(218, 165, 32, 0.3);
+}
+
+.skill-name {
+    color: #DAA520;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.skill-level {
+    font-size: 12px;
+    color: #cccccc;
+}
+
+/* 战斗界面 */
+.modal-content.battle {
+    max-width: 380px;
+}
+
+#battle-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.combatant {
+    flex: 1;
+    text-align: center;
+}
+
+.combatant h4 {
+    color: #DAA520;
+    margin-bottom: 10px;
+}
+
+.vs {
+    margin: 0 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff4444;
+}
+
+.battle-stats {
+    max-width: 120px;
+    margin: 0 auto;
+}
+
+.battle-hp {
+    margin-bottom: 5px;
+}
+
+.battle-hp span:first-child {
+    font-size: 10px;
+    color: #cccccc;
+}
+
+#battle-log {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    min-height: 100px;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#battle-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.battle-btn {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #DAA520;
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.battle-btn:hover {
+    background: rgba(218, 165, 32, 0.3);
+}
+
+.battle-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    #game-container {
+        max-width: 100%;
+    }
+    
+    .screen {
+        padding: 15px;
+    }
+    
+    #game-header h1 {
+        font-size: 24px;
+    }
+    
+    .character-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.screen.active {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* 文字效果 */
+.typing-effect {
+    overflow: hidden;
+    border-right: 2px solid #DAA520;
+    white-space: nowrap;
+    animation: typing 2s steps(30, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: #DAA520; }
+}

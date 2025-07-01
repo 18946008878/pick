@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>破天一剑 - 文字武侠RPG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- 游戏标题 -->
+        <header id="game-header">
+            <h1>破天一剑</h1>
+            <p class="subtitle">星宿争霸，破天神功</p>
+        </header>
+
+        <!-- 游戏主界面 -->
+        <main id="game-main">
+            <!-- 角色创建界面 -->
+            <div id="character-creation" class="screen active">
+                <h2>选择你的命运</h2>
+                <p class="story-text">
+                    创世之初，太极八卦封印了神界之门。如今紫微星转暗，创世之神消陨，
+                    逆天之神势力膨胀。你作为人极星的武者，将踏上寻找三件亘古圣物的征程...
+                </p>
+                
+                <div class="character-selection">
+                    <h3>选择角色</h3>
+                    <div class="character-grid">
+                        <div class="character-card" data-character="yijian">
+                            <h4>一剑</h4>
+                            <p>近战输出 | 乾光之力</p>
+                            <p class="stats">力量:★★★★★ 敏捷:★★★ 智力:★★ 体质:★★★★</p>
+                        </div>
+                        <div class="character-card" data-character="xiuya">
+                            <h4>秀雅</h4>
+                            <p>远程射手 | 火系弓箭</p>
+                            <p class="stats">力量:★★★ 敏捷:★★★★★ 智力:★★★ 体质:★★</p>
+                        </div>
+                        <div class="character-card" data-character="zhilu">
+                            <h4>指路</h4>
+                            <p>灵活刺客 | 突进控制</p>
+                            <p class="stats">力量:★★★ 敏捷:★★★★★ 智力:★★★ 体质:★★★</p>
+                        </div>
+                        <div class="character-card" data-character="muzhi">
+                            <h4>拇指</h4>
+                            <p>治疗辅助 | 陷阱天雷</p>
+                            <p class="stats">力量:★★ 敏捷:★★★ 智力:★★★★★ 体质:★★★</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="name-input">
+                    <label for="player-name">输入你的名字：</label>
+                    <input type="text" id="player-name" placeholder="江湖侠客" maxlength="10">
+                </div>
+
+                <button id="start-game" class="btn btn-primary">开始游戏</button>
+            </div>
+
+            <!-- 游戏主界面 -->
+            <div id="game-interface" class="screen">
+                <!-- 状态栏 -->
+                <div id="status-bar">
+                    <div class="player-info">
+                        <span id="player-name-display"></span>
+                        <span id="player-level">Lv.1</span>
+                    </div>
+                    <div class="player-stats">
+                        <div class="stat-bar">
+                            <span>生命</span>
+                            <div class="bar">
+                                <div id="hp-bar" class="bar-fill hp"></div>
+                                <span id="hp-text">100/100</span>
+                            </div>
+                        </div>
+                        <div class="stat-bar">
+                            <span>内力</span>
+                            <div class="bar">
+                                <div id="mp-bar" class="bar-fill mp"></div>
+                                <span id="mp-text">50/50</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 故事文本区域 -->
+                <div id="story-area">
+                    <div id="story-text"></div>
+                </div>
+
+                <!-- 选择按钮区域 -->
+                <div id="choice-area">
+                    <!-- 动态生成的选择按钮 -->
+                </div>
+
+                <!-- 游戏菜单 -->
+                <div id="game-menu">
+                    <button class="menu-btn" id="status-btn">状态</button>
+                    <button class="menu-btn" id="inventory-btn">背包</button>
+                    <button class="menu-btn" id="skills-btn">武功</button>
+                    <button class="menu-btn" id="save-btn">存档</button>
+                </div>
+            </div>
+
+            <!-- 状态界面 -->
+            <div id="status-screen" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>角色状态</h3>
+                    <div id="character-stats">
+                        <div class="stat-row">
+                            <span>等级：</span><span id="level-display">1</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>经验：</span><span id="exp-display">0/100</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>力量：</span><span id="strength-display">10</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>敏捷：</span><span id="agility-display">10</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>智力：</span><span id="intelligence-display">10</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>体质：</span><span id="constitution-display">10</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>当前位置：</span><span id="location-display">人极星</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 背包界面 -->
+            <div id="inventory-screen" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>背包</h3>
+                    <div id="inventory-grid">
+                        <!-- 动态生成物品 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 武功界面 -->
+            <div id="skills-screen" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>武功修炼</h3>
+                    <div id="skills-list">
+                        <!-- 动态生成武功列表 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 战斗界面 -->
+            <div id="battle-screen" class="modal">
+                <div class="modal-content battle">
+                    <h3>战斗</h3>
+                    <div id="battle-area">
+                        <div class="combatant player">
+                            <h4 id="player-battle-name">玩家</h4>
+                            <div class="battle-stats">
+                                <div class="battle-hp">
+                                    <span>生命</span>
+                                    <div class="bar">
+                                        <div id="player-battle-hp" class="bar-fill hp"></div>
+                                        <span id="player-battle-hp-text">100/100</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="vs">VS</div>
+                        
+                        <div class="combatant enemy">
+                            <h4 id="enemy-name">敌人</h4>
+                            <div class="battle-stats">
+                                <div class="battle-hp">
+                                    <span>生命</span>
+                                    <div class="bar">
+                                        <div id="enemy-hp" class="bar-fill hp"></div>
+                                        <span id="enemy-hp-text">100/100</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="battle-log"></div>
+                    
+                    <div id="battle-actions">
+                        <button class="battle-btn" id="attack-btn">攻击</button>
+                        <button class="battle-btn" id="skill-btn">武功</button>
+                        <button class="battle-btn" id="item-btn">道具</button>
+                        <button class="battle-btn" id="flee-btn">逃跑</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
