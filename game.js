@@ -7,28 +7,57 @@ const GameData = {
             description: "近战输出，掌握乾光之力",
             element: "light",
             baseStats: { strength: 20, agility: 15, intelligence: 10, constitution: 18 },
-            skills: ["破天剑法", "乾坤一剑", "光明斩"]
+            skills: ["破天剑法", "乾坤一剑", "光明斩"],
+            specialAbility: "破天神功",
+            growthType: "warrior"
         },
         xiuya: {
             name: "秀雅", 
             description: "远程射手，善用火系弓箭",
             element: "fire",
             baseStats: { strength: 15, agility: 20, intelligence: 15, constitution: 12 },
-            skills: ["火箭术", "连环射", "爆炎箭"]
+            skills: ["火箭术", "连环射", "爆炎箭"],
+            specialAbility: "火凤九天",
+            growthType: "archer"
         },
         zhilu: {
             name: "指路",
             description: "灵活刺客，突进控制兼备", 
             element: "wind",
             baseStats: { strength: 15, agility: 20, intelligence: 15, constitution: 15 },
-            skills: ["疾风步", "影分身", "风刃舞"]
+            skills: ["疾风步", "影分身", "风刃舞"],
+            specialAbility: "风神术",
+            growthType: "assassin"
         },
         muzhi: {
             name: "拇指",
             description: "治疗辅助，善用陷阱和天雷",
             element: "thunder",
-            baseStats: { strength: 10, agility: 15, intelligence: 20, constitution: 15 },
-            skills: ["治疗术", "雷电陷阱", "天雷降"]
+            baseStats: { strength: 12, agility: 15, intelligence: 20, constitution: 16 },
+            skills: ["雷光术", "治疗术", "陷阱布置"],
+            specialAbility: "天雷引",
+            growthType: "support"
+        },
+        // 新增隐藏角色
+        nangong: {
+            name: "南宫",
+            description: "防御战士，最高防御力和反击能力",
+            element: "earth",
+            baseStats: { strength: 18, agility: 10, intelligence: 12, constitution: 25 },
+            skills: ["岩壁术", "反击", "大地震"],
+            specialAbility: "不动如山",
+            growthType: "tank",
+            unlockCondition: "完成第一章"
+        },
+        yunting: {
+            name: "云婷",
+            description: "冰系法师，厚积薄发愈战愈勇",
+            element: "ice",
+            baseStats: { strength: 10, agility: 12, intelligence: 25, constitution: 15 },
+            skills: ["冰封术", "暴风雪", "冰墙"],
+            specialAbility: "冰河时代",
+            growthType: "mage",
+            unlockCondition: "达到15级"
         }
     },
 
@@ -45,96 +74,421 @@ const GameData = {
 
     // 敌人数据
     enemies: {
-        "山贼": { name: "山贼", hp: 80, attack: 15, defense: 5, exp: 50, loot: ["破天铜牌"] },
-        "野狼": { name: "野狼", hp: 60, attack: 12, defense: 3, exp: 30, loot: ["活血丹"] },
-        "魔教弟子": { name: "魔教弟子", hp: 120, attack: 20, defense: 8, exp: 80, loot: ["破天银牌", "回神丹"] },
-        "逆天之神使者": { name: "逆天之神使者", hp: 200, attack: 35, defense: 15, exp: 200, loot: ["经验丹", "破天银牌"] }
+        // 普通敌人
+        wildWolf: {
+            name: "野狼",
+            level: 1,
+            hp: 30,
+            attack: 8,
+            defense: 3,
+            element: "earth",
+            skills: ["撕咬"],
+            exp: 15,
+            dropRate: { "破天铜牌": 0.8, "活血丹": 0.3 },
+            type: "beast"
+        },
+        bandit: {
+            name: "山贼",
+            level: 2,
+            hp: 45,
+            attack: 12,
+            defense: 5,
+            element: "none",
+            skills: ["乱刀斩"],
+            exp: 25,
+            dropRate: { "破天铜牌": 0.7, "铁剑": 0.2, "活血丹": 0.4 },
+            type: "human"
+        },
+        evilSpirit: {
+            name: "邪灵",
+            level: 3,
+            hp: 60,
+            attack: 15,
+            defense: 4,
+            element: "dark",
+            skills: ["鬼火", "恐惧"],
+            exp: 35,
+            dropRate: { "破天银牌": 0.5, "回神丹": 0.3, "暗影石": 0.1 },
+            type: "spirit"
+        },
+        // 精英怪物
+        forestGuardian: {
+            name: "森林守护者",
+            level: 5,
+            hp: 120,
+            attack: 20,
+            defense: 8,
+            element: "nature",
+            skills: ["藤蔓缠绕", "自然愈合", "荆棘反击"],
+            exp: 80,
+            dropRate: { "破天银牌": 0.8, "生命之果": 0.4, "翡翠护符": 0.2 },
+            type: "elite",
+            special: "每回合恢复10点生命"
+        },
+        shadowAssassin: {
+            name: "暗影刺客",
+            level: 8,
+            hp: 100,
+            attack: 35,
+            defense: 6,
+            element: "dark",
+            skills: ["暗杀", "影分身", "毒刃"],
+            exp: 120,
+            dropRate: { "破天银牌": 0.9, "暗影匕首": 0.3, "隐身斗篷": 0.1 },
+            type: "elite",
+            special: "30%闪避率"
+        },
+        // BOSS级敌人
+        dragonLord: {
+            name: "火龙王",
+            level: 15,
+            hp: 500,
+            attack: 60,
+            defense: 15,
+            element: "fire",
+            skills: ["龙息", "火焰风暴", "龙鳞护盾", "怒火爆发"],
+            exp: 300,
+            dropRate: { "破天金牌": 0.9, "龙鳞剑": 0.5, "火龙珠": 0.3, "龙王宝箱": 1.0 },
+            type: "boss",
+            special: "免疫火系伤害，三阶段战斗",
+            phases: [
+                { hpThreshold: 0.7, action: "召唤火焰精灵" },
+                { hpThreshold: 0.3, action: "进入狂暴状态" }
+            ]
+        }
     },
 
-    // 故事节点
-    storyNodes: {
-        start: {
-            text: "你醒来时发现自己身处人极星的一个小村庄。村民们惊恐地告诉你，天空中的紫微星已经黯淡无光，整个宇宙都在逆天之神的威胁之下。作为一名武者，你决定踏上寻找三件亘古圣物的征程...",
-            choices: [
-                { text: "前往村长家了解详情", next: "village_chief" },
-                { text: "直接出发寻找圣物", next: "forest_entrance" },
-                { text: "先在村中修炼武功", next: "training_ground" }
+    // 装备系统
+    equipment: {
+        weapons: {
+            woodenSword: {
+                name: "木剑",
+                type: "weapon",
+                subType: "sword",
+                attack: 5,
+                description: "最基础的木制武器",
+                rarity: "common",
+                price: 10,
+                requirements: { level: 1 }
+            },
+            ironSword: {
+                name: "铁剑",
+                type: "weapon",
+                subType: "sword",
+                attack: 12,
+                description: "普通的铁制长剑",
+                rarity: "common",
+                price: 50,
+                requirements: { level: 3 }
+            },
+            dragonScaleSword: {
+                name: "龙鳞剑",
+                type: "weapon",
+                subType: "sword",
+                attack: 35,
+                fireResist: 20,
+                description: "用火龙鳞片锻造的神兵",
+                rarity: "epic",
+                price: 500,
+                requirements: { level: 10, strength: 25 },
+                special: "攻击时有20%几率造成灼烧效果"
+            },
+            shadowDagger: {
+                name: "暗影匕首",
+                type: "weapon",
+                subType: "dagger",
+                attack: 25,
+                agility: 5,
+                description: "来自暗影位面的神秘武器",
+                rarity: "rare",
+                price: 200,
+                requirements: { level: 8, agility: 20 },
+                special: "攻击时有15%几率触发暗袭效果"
+            }
+        },
+        armor: {
+            clothRobe: {
+                name: "布袍",
+                type: "armor",
+                subType: "robe",
+                defense: 3,
+                description: "简单的布制长袍",
+                rarity: "common",
+                price: 15
+            },
+            leatherArmor: {
+                name: "皮甲",
+                type: "armor",
+                subType: "light",
+                defense: 8,
+                agility: 2,
+                description: "轻便的皮革护甲",
+                rarity: "common",
+                price: 40
+            },
+            plateArmor: {
+                name: "板甲",
+                type: "armor",
+                subType: "heavy",
+                defense: 20,
+                constitution: 5,
+                agility: -3,
+                description: "厚重的金属板甲",
+                rarity: "rare",
+                price: 300,
+                requirements: { level: 12, constitution: 20 }
+            }
+        },
+        accessories: {
+            powerRing: {
+                name: "力量戒指",
+                type: "accessory",
+                subType: "ring",
+                strength: 3,
+                description: "增强力量的魔法戒指",
+                rarity: "uncommon",
+                price: 80
+            },
+            wisdomNecklace: {
+                name: "智慧项链",
+                type: "accessory",
+                subType: "necklace",
+                intelligence: 5,
+                mp: 20,
+                description: "蕴含古老智慧的项链",
+                rarity: "rare",
+                price: 150
+            },
+            dragonPearl: {
+                name: "火龙珠",
+                type: "accessory",
+                subType: "orb",
+                intelligence: 8,
+                fireBonus: 25,
+                description: "火龙王的内丹，蕴含强大火系力量",
+                rarity: "legendary",
+                price: 1000,
+                requirements: { level: 15 },
+                special: "火系技能威力提升25%"
+            }
+        }
+    },
+
+    // 技能系统
+    skills: {
+        // 基础技能
+        basic: {
+            attack: { name: "普通攻击", cost: 0, damage: 1.0, description: "基础物理攻击" },
+            heal: { name: "治疗术", cost: 10, heal: 30, description: "恢复生命值" },
+            guard: { name: "防御", cost: 0, defenseBonus: 0.5, description: "提升50%防御力" }
+        },
+        // 元素技能
+        fire: {
+            fireball: { name: "火球术", cost: 15, damage: 1.5, element: "fire", description: "发射火球攻击敌人" },
+            fireStorm: { name: "火焰风暴", cost: 25, damage: 2.0, element: "fire", aoe: true, description: "范围火焰攻击" },
+            phoenixFire: { name: "凤凰烈火", cost: 40, damage: 3.0, element: "fire", description: "终极火系技能", requirements: { level: 20 } }
+        },
+        ice: {
+            iceSpike: { name: "冰锥术", cost: 12, damage: 1.3, element: "ice", description: "发射锋利冰锥", effect: "减速" },
+            blizzard: { name: "暴风雪", cost: 30, damage: 1.8, element: "ice", aoe: true, description: "大范围冰雪攻击" },
+            frostArmor: { name: "冰甲术", cost: 20, defense: 1.5, duration: 3, description: "提升防御并反弹伤害" }
+        },
+        lightning: {
+            shock: { name: "电击", cost: 10, damage: 1.2, element: "lightning", description: "快速雷电攻击", effect: "麻痹" },
+            chainLightning: { name: "连锁闪电", cost: 25, damage: 1.6, element: "lightning", description: "跳跃式雷电攻击" },
+            thunderStorm: { name: "雷暴", cost: 35, damage: 2.5, element: "lightning", description: "天雷降世" }
+        },
+        // 特殊技能
+        special: {
+            doubleStrike: { name: "二连击", cost: 15, attacks: 2, damage: 0.8, description: "连续攻击两次" },
+            criticalStrike: { name: "致命一击", cost: 20, damage: 2.5, critRate: 0.5, description: "高暴击率攻击" },
+            lifeSteal: { name: "生命汲取", cost: 18, damage: 1.3, heal: 0.5, description: "攻击时恢复伤害50%的生命" },
+            timeStop: { name: "时间停止", cost: 50, description: "跳过敌人一回合", requirements: { level: 25 } }
+        }
+    },
+
+    // 地图系统
+    maps: {
+        humanRealm: {
+            name: "人极星",
+            description: "人类聚居的星球，有繁华的城镇和危险的野外",
+            areas: {
+                beginnerVillage: {
+                    name: "新手村",
+                    description: "宁静的小村庄，冒险的起点",
+                    enemies: ["wildWolf"],
+                    level: 1,
+                    features: ["商店", "治疗点", "任务发布"]
+                },
+                darkForest: {
+                    name: "黑暗森林",
+                    description: "充满危险的原始森林",
+                    enemies: ["wildWolf", "bandit", "forestGuardian"],
+                    level: 3,
+                    features: ["隐藏宝箱", "药草采集"]
+                },
+                shadowCave: {
+                    name: "暗影洞穴",
+                    description: "邪恶力量聚集的神秘洞穴",
+                    enemies: ["evilSpirit", "shadowAssassin"],
+                    level: 8,
+                    features: ["BOSS房间", "传送门"]
+                }
+            }
+        },
+        dragonRealm: {
+            name: "火龙域",
+            description: "火龙族统治的炽热星球",
+            areas: {
+                lavaPlateau: {
+                    name: "熔岩高原",
+                    description: "炽热的熔岩覆盖大地",
+                    enemies: ["fireElemental", "lavaBeast"],
+                    level: 12,
+                    features: ["火系增强", "炼金材料"]
+                },
+                dragonLair: {
+                    name: "龙王巢穴",
+                    description: "火龙王的领域",
+                    enemies: ["dragonLord"],
+                    level: 15,
+                    features: ["BOSS战", "传说装备"],
+                    requirements: { "收集火龙令牌": 3 }
+                }
+            }
+        }
+    },
+
+    // 任务系统
+    quests: {
+        main: {
+            findArtifacts: {
+                name: "寻找亘古圣物",
+                description: "收集破天剑、破天牌、破天秘笈",
+                type: "main",
+                objectives: [
+                    { type: "collect", item: "破天剑", current: 0, target: 1 },
+                    { type: "collect", item: "破天牌", current: 0, target: 1 },
+                    { type: "collect", item: "破天秘笈", current: 0, target: 1 }
+                ],
+                rewards: { exp: 1000, items: ["宇宙之心"] }
+            }
+        },
+        side: {
+            hunterQuest: {
+                name: "森林守护者",
+                description: "击败森林中的邪恶生物",
+                type: "side",
+                objectives: [
+                    { type: "kill", enemy: "wildWolf", current: 0, target: 5 },
+                    { type: "kill", enemy: "forestGuardian", current: 0, target: 1 }
+                ],
+                rewards: { exp: 200, items: ["翡翠护符"], gold: 100 }
+            }
+        },
+        daily: {
+            collectHerbs: {
+                name: "采集草药",
+                description: "在森林中采集治疗草药",
+                type: "daily",
+                objectives: [
+                    { type: "collect", item: "治疗草", current: 0, target: 10 }
+                ],
+                rewards: { exp: 50, items: ["活血丹"], gold: 20 },
+                resetTime: "daily"
+            }
+        }
+    },
+
+    // 成就系统
+    achievements: {
+        firstVictory: {
+            name: "初战告捷",
+            description: "赢得第一场战斗",
+            type: "combat",
+            condition: { type: "winBattles", target: 1 },
+            rewards: { exp: 20, title: "新手勇士" }
+        },
+        dragonSlayer: {
+            name: "屠龙勇士",
+            description: "击败火龙王",
+            type: "boss",
+            condition: { type: "killBoss", boss: "dragonLord" },
+            rewards: { exp: 500, title: "屠龙者", item: "龙魂护符" }
+        },
+        collector: {
+            name: "收藏家",
+            description: "收集50件装备",
+            type: "collection",
+            condition: { type: "collectItems", target: 50 },
+            rewards: { exp: 300, item: "收藏家徽章" }
+        }
+    },
+
+    // 商店系统
+    shops: {
+        generalStore: {
+            name: "杂货店",
+            items: {
+                "活血丹": { price: 20, stock: -1 },
+                "回神丹": { price: 30, stock: -1 },
+                "木剑": { price: 10, stock: 5 },
+                "布袍": { price: 15, stock: 3 }
+            }
+        },
+        weaponShop: {
+            name: "武器店",
+            items: {
+                "铁剑": { price: 50, stock: 3 },
+                "暗影匕首": { price: 200, stock: 1, requirements: { level: 8 } },
+                "皮甲": { price: 40, stock: 5 }
+            }
+        },
+        magicShop: {
+            name: "法术商店",
+            items: {
+                "智慧项链": { price: 150, stock: 2 },
+                "火球卷轴": { price: 80, stock: 10 },
+                "治疗卷轴": { price: 60, stock: -1 }
+            },
+            requirements: { intelligence: 15 }
+        }
+    },
+
+    // 随机事件系统
+    randomEvents: {
+        treasureChest: {
+            name: "神秘宝箱",
+            description: "你发现了一个闪闪发光的宝箱",
+            type: "treasure",
+            probability: 0.1,
+            outcomes: [
+                { probability: 0.4, result: "gold", amount: [20, 100] },
+                { probability: 0.3, result: "item", items: ["活血丹", "回神丹", "经验丹"] },
+                { probability: 0.2, result: "equipment", rarity: "uncommon" },
+                { probability: 0.1, result: "rare_equipment", rarity: "rare" }
             ]
         },
-        village_chief: {
-            text: "村长是一位年迈的老者，他的眼中充满了忧虑。\"年轻的武者啊，\"他缓缓说道，\"传说中有三件亘古圣物：破天剑、破天牌、破天秘笈。只有集齐这三样宝物，才能让太极八卦盘正转，击败逆天之神。但这条路充满危险...\"",
-            choices: [
-                { text: "询问圣物的具体位置", next: "artifacts_location" },
-                { text: "请求村长的帮助", next: "village_help" },
-                { text: "告辞出发冒险", next: "forest_entrance" }
+        mysteriousTrader: {
+            name: "神秘商人",
+            description: "一个神秘的商人向你兜售珍稀物品",
+            type: "trader",
+            probability: 0.05,
+            items: [
+                { name: "神秘药水", effect: "随机属性+5", price: 200 },
+                { name: "经验药水", effect: "获得500经验", price: 300 },
+                { name: "幸运符", effect: "下次战斗必定暴击", price: 150 }
             ]
         },
-        artifacts_location: {
-            text: "村长摇摇头：\"具体位置我也不清楚，但据古老传说，破天剑藏在午灵星的护法手中，破天牌在申灵星的神庙里，而破天秘笈则在天极星的仙人洞府。你需要乘坐古船在星际间旅行。\"",
-            choices: [
-                { text: "前往星际码头", next: "starport" },
-                { text: "先在本星球练级", next: "forest_entrance" }
-            ]
-        },
-        village_help: {
-            text: "村长递给你一个包裹：\"这里有一些基础的丹药和一把新手剑，虽然不是什么珍贵物品，但希望能帮到你。记住，武功的修炼需要循序渐进，不可急于求成。\"",
-            reward: { items: ["新手剑", "活血丹", "活血丹", "回神丹"] },
-            choices: [
-                { text: "感谢村长的帮助", next: "forest_entrance" }
-            ]
-        },
-        training_ground: {
-            text: "你来到村子的训练场，这里有一些木人桩和基础的修炼设施。通过练习，你感觉自己的武功有所精进。",
-            reward: { exp: 100 },
-            choices: [
-                { text: "继续修炼", next: "training_ground" },
-                { text: "离开训练场", next: "forest_entrance" }
-            ]
-        },
-        forest_entrance: {
-            text: "你走出村庄，来到一片茂密的森林前。这里是通往其他地区的必经之路，但也潜伏着各种危险。远处传来了野兽的嚎叫声...",
-            choices: [
-                { text: "小心地深入森林", next: "forest_deep" },
-                { text: "寻找其他路径", next: "mountain_path" },
-                { text: "返回村庄", next: "start" }
-            ]
-        },
-        forest_deep: {
-            text: "森林深处弥漫着神秘的雾气，你听到了脚步声。突然，一群山贼从树后跳了出来！\"留下买路钱！\"为首的山贼大喝道。",
-            encounter: "山贼",
-            choices: [
-                { text: "与山贼战斗", action: "battle" },
-                { text: "尝试交涉", next: "negotiate_bandits" },
-                { text: "快速逃跑", next: "forest_entrance" }
-            ]
-        },
-        negotiate_bandits: {
-            text: "你试图与山贼讲道理，但他们显然不是善类。\"废话少说，交钱还是受死！\"看来战斗不可避免了。",
-            encounter: "山贼",
-            choices: [
-                { text: "战斗", action: "battle" }
-            ]
-        },
-        mountain_path: {
-            text: "你选择了一条崎岖的山路。路途虽然艰难，但相对安全。在山路上，你遇到了一位修行的道士。",
-            choices: [
-                { text: "向道士请教武功", next: "dao_master" },
-                { text: "继续前行", next: "starport" }
-            ]
-        },
-        dao_master: {
-            text: "道士看了你一眼，微笑道：\"年轻人，我看你根骨不错，愿意传授你一门基础内功心法。\"",
-            reward: { skill: "基础内功", exp: 150 },
-            choices: [
-                { text: "感谢道士并继续前行", next: "starport" }
-            ]
-        },
-        starport: {
-            text: "你来到了星际码头，这里停泊着各种奇形怪状的古船。船长告诉你，前往其他星球需要支付船费，或者你可以尝试自己获得一艘跟斗云...",
-            choices: [
-                { text: "支付船费前往午灵星", next: "wuling_star", cost: "破天银牌" },
-                { text: "前往申灵星", next: "shenling_star", cost: "破天银牌" },
-                { text: "寻找跟斗云", next: "find_cloud" }
+        ancientSpirit: {
+            name: "古老精灵",
+            description: "遇到了古老的精灵，它愿意传授你知识",
+            type: "blessing",
+            probability: 0.03,
+            effects: [
+                { type: "skillPoints", amount: 2 },
+                { type: "statBonus", stat: "random", amount: 3 },
+                { type: "newSkill", skill: "random" }
             ]
         }
     }
@@ -1375,4 +1729,687 @@ GameManager.bindSettingsEvents = function() {
             }
         });
     };
+};
+
+// 扩展游戏状态
+let gameState = {
+    character: null,
+    inventory: {
+        "破天铜牌": 100,
+        "活血丹": 3,
+        "回神丹": 2
+    },
+    equipment: {
+        weapon: null,
+        armor: null,
+        accessory: null
+    },
+    currentScene: 'start',
+    gameFlags: {},
+    playTime: 0,
+    location: {
+        realm: 'humanRealm',
+        area: 'beginnerVillage'
+    },
+    quests: {
+        active: [],
+        completed: [],
+        available: ['hunterQuest', 'collectHerbs']
+    },
+    achievements: {
+        unlocked: [],
+        progress: {}
+    },
+    unlockedCharacters: ['yijian', 'xiuya', 'zhilu', 'muzhi'],
+    battleStats: {
+        wins: 0,
+        losses: 0,
+        monstersKilled: {},
+        bossesDefeated: []
+    },
+    discoveredAreas: ['beginnerVillage'],
+    skillPoints: 0,
+    learnedSkills: []
+};
+
+// 任务管理系统
+const QuestManager = {
+    // 获取任务
+    getQuest(questId) {
+        for (const category in GameData.quests) {
+            if (GameData.quests[category][questId]) {
+                return GameData.quests[category][questId];
+            }
+        }
+        return null;
+    },
+    
+    // 开始任务
+    startQuest(questId) {
+        const quest = this.getQuest(questId);
+        if (!quest) return false;
+        
+        const questProgress = {
+            id: questId,
+            name: quest.name,
+            description: quest.description,
+            type: quest.type,
+            objectives: quest.objectives.map(obj => ({ ...obj })),
+            startTime: Date.now(),
+            status: 'active'
+        };
+        
+        gameState.quests.active.push(questProgress);
+        gameState.quests.available = gameState.quests.available.filter(id => id !== questId);
+        
+        GameSettings.showNotification(`接受任务：${quest.name}`, 'info');
+        return true;
+    },
+    
+    // 更新任务进度
+    updateProgress(type, target, amount = 1) {
+        gameState.quests.active.forEach(quest => {
+            quest.objectives.forEach(objective => {
+                if (objective.type === type && 
+                    (objective.item === target || objective.enemy === target)) {
+                    objective.current = Math.min(objective.current + amount, objective.target);
+                    
+                    if (objective.current >= objective.target) {
+                        GameSettings.showNotification(`任务目标完成：${objective.type} ${target}`, 'success');
+                    }
+                }
+            });
+            
+            // 检查任务是否完成
+            if (quest.objectives.every(obj => obj.current >= obj.target)) {
+                this.completeQuest(quest.id);
+            }
+        });
+    },
+    
+    // 完成任务
+    completeQuest(questId) {
+        const questIndex = gameState.quests.active.findIndex(q => q.id === questId);
+        if (questIndex === -1) return;
+        
+        const quest = gameState.quests.active[questIndex];
+        const questData = this.getQuest(questId);
+        
+        if (questData.rewards) {
+            // 给予奖励
+            if (questData.rewards.exp) {
+                gameState.character.experience += questData.rewards.exp;
+                GameManager.checkLevelUp();
+            }
+            
+            if (questData.rewards.items) {
+                questData.rewards.items.forEach(item => {
+                    InventoryManager.addItem(item, 1);
+                });
+            }
+            
+            if (questData.rewards.gold) {
+                InventoryManager.addItem('破天铜牌', questData.rewards.gold);
+            }
+        }
+        
+        // 移除完成的任务
+        gameState.quests.active.splice(questIndex, 1);
+        gameState.quests.completed.push(questId);
+        
+        GameSettings.showNotification(`任务完成：${quest.name}！`, 'success');
+        AchievementManager.checkAchievements();
+    },
+    
+    // 获取任务界面HTML
+    getQuestHTML() {
+        let html = '<div class="quest-panel">';
+        
+        // 活跃任务
+        if (gameState.quests.active.length > 0) {
+            html += '<h4>进行中的任务</h4>';
+            gameState.quests.active.forEach(quest => {
+                html += `<div class="quest-item active">
+                    <h5>${quest.name}</h5>
+                    <p>${quest.description}</p>
+                    <div class="objectives">`;
+                
+                quest.objectives.forEach(obj => {
+                    const completed = obj.current >= obj.target;
+                    html += `<div class="objective ${completed ? 'completed' : ''}">
+                        ${obj.type === 'kill' ? '击败' : '收集'} ${obj.enemy || obj.item}: 
+                        ${obj.current}/${obj.target}
+                        ${completed ? ' ✓' : ''}
+                    </div>`;
+                });
+                
+                html += '</div></div>';
+            });
+        }
+        
+        // 可接任务
+        if (gameState.quests.available.length > 0) {
+            html += '<h4>可接任务</h4>';
+            gameState.quests.available.forEach(questId => {
+                const quest = this.getQuest(questId);
+                if (quest) {
+                    html += `<div class="quest-item available">
+                        <h5>${quest.name}</h5>
+                        <p>${quest.description}</p>
+                        <button onclick="QuestManager.startQuest('${questId}')">接受任务</button>
+                    </div>`;
+                }
+            });
+        }
+        
+        html += '</div>';
+        return html;
+    }
+};
+
+// 成就管理系统
+const AchievementManager = {
+    // 检查成就
+    checkAchievements() {
+        Object.keys(GameData.achievements).forEach(achievementId => {
+            if (gameState.achievements.unlocked.includes(achievementId)) return;
+            
+            const achievement = GameData.achievements[achievementId];
+            const condition = achievement.condition;
+            let unlocked = false;
+            
+            switch (condition.type) {
+                case 'winBattles':
+                    unlocked = gameState.battleStats.wins >= condition.target;
+                    break;
+                case 'killBoss':
+                    unlocked = gameState.battleStats.bossesDefeated.includes(condition.boss);
+                    break;
+                case 'collectItems':
+                    const totalItems = Object.values(gameState.inventory).reduce((sum, count) => sum + count, 0);
+                    unlocked = totalItems >= condition.target;
+                    break;
+            }
+            
+            if (unlocked) {
+                this.unlockAchievement(achievementId);
+            }
+        });
+    },
+    
+    // 解锁成就
+    unlockAchievement(achievementId) {
+        const achievement = GameData.achievements[achievementId];
+        gameState.achievements.unlocked.push(achievementId);
+        
+        // 给予奖励
+        if (achievement.rewards.exp) {
+            gameState.character.experience += achievement.rewards.exp;
+        }
+        if (achievement.rewards.title) {
+            gameState.character.title = achievement.rewards.title;
+        }
+        if (achievement.rewards.item) {
+            InventoryManager.addItem(achievement.rewards.item, 1);
+        }
+        
+        GameSettings.showNotification(`🏆 成就解锁：${achievement.name}！`, 'success');
+        GameManager.checkLevelUp();
+    },
+    
+    // 获取成就界面HTML
+    getAchievementHTML() {
+        let html = '<div class="achievement-panel">';
+        
+        Object.keys(GameData.achievements).forEach(achievementId => {
+            const achievement = GameData.achievements[achievementId];
+            const unlocked = gameState.achievements.unlocked.includes(achievementId);
+            
+            html += `<div class="achievement-item ${unlocked ? 'unlocked' : 'locked'}">
+                <div class="achievement-icon">${unlocked ? '🏆' : '🔒'}</div>
+                <div class="achievement-info">
+                    <h5>${achievement.name}</h5>
+                    <p>${achievement.description}</p>
+                    ${unlocked ? '<span class="status">已解锁</span>' : '<span class="status">未解锁</span>'}
+                </div>
+            </div>`;
+        });
+        
+        html += '</div>';
+        return html;
+    }
+};
+
+// 商店管理系统
+const ShopManager = {
+    // 显示商店
+    showShop(shopType) {
+        const shop = GameData.shops[shopType];
+        if (!shop) return;
+        
+        // 检查商店需求
+        if (shop.requirements) {
+            for (const [stat, value] of Object.entries(shop.requirements)) {
+                if (gameState.character[stat] < value) {
+                    GameSettings.showNotification(`需要${stat} ${value}才能使用此商店`, 'warning');
+                    return;
+                }
+            }
+        }
+        
+        let html = `<div class="shop-panel">
+            <h3>${shop.name}</h3>
+            <div class="shop-items">`;
+        
+        Object.entries(shop.items).forEach(([itemName, itemData]) => {
+            const canBuy = this.canBuyItem(itemName, itemData);
+            const stock = itemData.stock === -1 ? '∞' : itemData.stock;
+            
+            html += `<div class="shop-item ${canBuy ? '' : 'disabled'}">
+                <div class="item-info">
+                    <h5>${itemName}</h5>
+                    <p>价格: ${itemData.price} 破天铜牌</p>
+                    <p>库存: ${stock}</p>
+                </div>
+                <button onclick="ShopManager.buyItem('${itemName}', '${shopType}')" 
+                        ${canBuy ? '' : 'disabled'}>购买</button>
+            </div>`;
+        });
+        
+        html += `</div>
+            <div class="player-money">
+                你的货币: ${gameState.inventory['破天铜牌'] || 0} 破天铜牌
+            </div>
+        </div>`;
+        
+        // 显示商店界面
+        this.showShopModal(html);
+    },
+    
+    // 检查是否能购买物品
+    canBuyItem(itemName, itemData) {
+        // 检查货币
+        const playerMoney = gameState.inventory['破天铜牌'] || 0;
+        if (playerMoney < itemData.price) return false;
+        
+        // 检查库存
+        if (itemData.stock === 0) return false;
+        
+        // 检查需求
+        if (itemData.requirements) {
+            for (const [stat, value] of Object.entries(itemData.requirements)) {
+                if (gameState.character[stat] < value) return false;
+            }
+        }
+        
+        return true;
+    },
+    
+    // 购买物品
+    buyItem(itemName, shopType) {
+        const shop = GameData.shops[shopType];
+        const itemData = shop.items[itemName];
+        
+        if (!this.canBuyItem(itemName, itemData)) return;
+        
+        // 扣除货币
+        InventoryManager.removeItem('破天铜牌', itemData.price);
+        
+        // 添加物品
+        InventoryManager.addItem(itemName, 1);
+        
+        // 减少库存
+        if (itemData.stock > 0) {
+            itemData.stock--;
+        }
+        
+        GameSettings.showNotification(`购买了 ${itemName}`, 'success');
+        vibrate();
+        
+        // 刷新商店界面
+        this.showShop(shopType);
+    },
+    
+    // 显示商店模态框
+    showShopModal(html) {
+        // 创建模态框
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'block';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                ${html}
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // 绑定关闭事件
+        modal.querySelector('.close').onclick = () => modal.remove();
+        modal.onclick = (e) => {
+            if (e.target === modal) modal.remove();
+        };
+    }
+};
+
+// 随机事件管理系统
+const RandomEventManager = {
+    // 触发随机事件
+    triggerRandomEvent() {
+        // 遍历所有事件，根据概率触发
+        Object.values(GameData.randomEvents).forEach(event => {
+            if (Math.random() < event.probability) {
+                this.executeEvent(event);
+            }
+        });
+    },
+    
+    // 执行事件
+    executeEvent(event) {
+        let html = `<div class="random-event">
+            <h3>${event.name}</h3>
+            <p>${event.description}</p>`;
+        
+        switch (event.type) {
+            case 'treasure':
+                const outcome = this.selectOutcome(event.outcomes);
+                const result = this.processOutcome(outcome);
+                html += `<p>${result.message}</p>`;
+                break;
+                
+            case 'trader':
+                html += '<div class="trader-items">';
+                event.items.forEach((item, index) => {
+                    html += `<div class="trader-item">
+                        <h5>${item.name}</h5>
+                        <p>${item.effect}</p>
+                        <p>价格: ${item.price} 破天铜牌</p>
+                        <button onclick="RandomEventManager.buyTraderItem(${index})">购买</button>
+                    </div>`;
+                });
+                html += '</div>';
+                this.currentTrader = event;
+                break;
+                
+            case 'blessing':
+                const effect = event.effects[Math.floor(Math.random() * event.effects.length)];
+                const blessing = this.applyBlessing(effect);
+                html += `<p>${blessing.message}</p>`;
+                break;
+        }
+        
+        html += '</div>';
+        this.showEventModal(html);
+    },
+    
+    // 选择结果
+    selectOutcome(outcomes) {
+        const rand = Math.random();
+        let cumulative = 0;
+        
+        for (const outcome of outcomes) {
+            cumulative += outcome.probability;
+            if (rand <= cumulative) {
+                return outcome;
+            }
+        }
+        
+        return outcomes[outcomes.length - 1];
+    },
+    
+    // 处理宝箱结果
+    processOutcome(outcome) {
+        switch (outcome.result) {
+            case 'gold':
+                const amount = Math.floor(Math.random() * (outcome.amount[1] - outcome.amount[0] + 1)) + outcome.amount[0];
+                InventoryManager.addItem('破天铜牌', amount);
+                return { message: `获得了 ${amount} 破天铜牌！` };
+                
+            case 'item':
+                const item = outcome.items[Math.floor(Math.random() * outcome.items.length)];
+                InventoryManager.addItem(item, 1);
+                return { message: `获得了 ${item}！` };
+                
+            case 'equipment':
+            case 'rare_equipment':
+                const equipment = this.generateRandomEquipment(outcome.rarity);
+                InventoryManager.addItem(equipment.name, 1);
+                return { message: `获得了 ${equipment.name}！` };
+                
+            default:
+                return { message: '什么都没有...' };
+        }
+    },
+    
+    // 生成随机装备
+    generateRandomEquipment(rarity) {
+        const equipment = [];
+        Object.values(GameData.equipment).forEach(category => {
+            Object.values(category).forEach(item => {
+                if (item.rarity === rarity) {
+                    equipment.push(item);
+                }
+            });
+        });
+        
+        return equipment[Math.floor(Math.random() * equipment.length)] || { name: '神秘装备' };
+    },
+    
+    // 应用祝福效果
+    applyBlessing(effect) {
+        switch (effect.type) {
+            case 'skillPoints':
+                gameState.skillPoints += effect.amount;
+                return { message: `获得了 ${effect.amount} 技能点！` };
+                
+            case 'statBonus':
+                const stats = ['strength', 'agility', 'intelligence', 'constitution'];
+                const stat = effect.stat === 'random' ? stats[Math.floor(Math.random() * stats.length)] : effect.stat;
+                gameState.character[stat] += effect.amount;
+                return { message: `${stat} 永久增加 ${effect.amount}！` };
+                
+            case 'newSkill':
+                // 随机学会一个技能
+                return { message: '学会了神秘的技能！' };
+                
+            default:
+                return { message: '得到了神秘的祝福！' };
+        }
+    },
+    
+    // 购买商人物品
+    buyTraderItem(itemIndex) {
+        if (!this.currentTrader) return;
+        
+        const item = this.currentTrader.items[itemIndex];
+        const playerMoney = gameState.inventory['破天铜牌'] || 0;
+        
+        if (playerMoney < item.price) {
+            GameSettings.showNotification('破天铜牌不足！', 'warning');
+            return;
+        }
+        
+        InventoryManager.removeItem('破天铜牌', item.price);
+        this.applyTraderItem(item);
+        GameSettings.showNotification(`购买了 ${item.name}`, 'success');
+    },
+    
+    // 应用商人物品效果
+    applyTraderItem(item) {
+        if (item.effect.includes('属性+5')) {
+            const stats = ['strength', 'agility', 'intelligence', 'constitution'];
+            const stat = stats[Math.floor(Math.random() * stats.length)];
+            gameState.character[stat] += 5;
+            GameSettings.showNotification(`${stat} 增加了 5 点！`, 'success');
+        } else if (item.effect.includes('500经验')) {
+            gameState.character.experience += 500;
+            GameManager.checkLevelUp();
+        } else if (item.effect.includes('必定暴击')) {
+            gameState.gameFlags.nextCritical = true;
+        }
+    },
+    
+    // 显示事件模态框
+    showEventModal(html) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'block';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                ${html}
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        modal.querySelector('.close').onclick = () => modal.remove();
+        modal.onclick = (e) => {
+            if (e.target === modal) modal.remove();
+        };
+    }
+};
+
+// 扩展库存管理
+const InventoryManager = {
+    // 添加物品
+    addItem(itemName, quantity) {
+        if (!gameState.inventory[itemName]) {
+            gameState.inventory[itemName] = 0;
+        }
+        gameState.inventory[itemName] += quantity;
+        
+        // 更新任务进度
+        QuestManager.updateProgress('collect', itemName, quantity);
+    },
+    
+    // 移除物品
+    removeItem(itemName, quantity) {
+        if (!gameState.inventory[itemName]) return false;
+        
+        if (gameState.inventory[itemName] >= quantity) {
+            gameState.inventory[itemName] -= quantity;
+            if (gameState.inventory[itemName] === 0) {
+                delete gameState.inventory[itemName];
+            }
+            return true;
+        }
+        return false;
+    },
+    
+    // 使用物品
+    useItem(itemName) {
+        if (!gameState.inventory[itemName] || gameState.inventory[itemName] <= 0) {
+            GameSettings.showNotification('物品不足！', 'warning');
+            return false;
+        }
+        
+        // 物品效果
+        const effects = {
+            '活血丹': () => {
+                const healAmount = 50;
+                gameState.character.hp = Math.min(gameState.character.maxHp, gameState.character.hp + healAmount);
+                GameSettings.showNotification(`恢复了 ${healAmount} 点生命值`, 'success');
+            },
+            '回神丹': () => {
+                const mpAmount = 30;
+                gameState.character.mp = Math.min(gameState.character.maxMp, gameState.character.mp + mpAmount);
+                GameSettings.showNotification(`恢复了 ${mpAmount} 点内力值`, 'success');
+            },
+            '经验丹': () => {
+                const expAmount = 100;
+                gameState.character.experience += expAmount;
+                GameSettings.showNotification(`获得了 ${expAmount} 点经验值`, 'success');
+                GameManager.checkLevelUp();
+            }
+        };
+        
+        if (effects[itemName]) {
+            effects[itemName]();
+            this.removeItem(itemName, 1);
+            GameManager.updateUI();
+            return true;
+        }
+        
+        return false;
+    },
+    
+    // 装备物品
+    equipItem(itemName) {
+        // 查找装备数据
+        let equipmentData = null;
+        let equipmentType = null;
+        
+        for (const [type, items] of Object.entries(GameData.equipment)) {
+            if (items[itemName]) {
+                equipmentData = items[itemName];
+                equipmentType = equipmentData.type;
+                break;
+            }
+        }
+        
+        if (!equipmentData) return false;
+        
+        // 检查装备需求
+        if (equipmentData.requirements) {
+            for (const [stat, value] of Object.entries(equipmentData.requirements)) {
+                if (gameState.character[stat] < value) {
+                    GameSettings.showNotification(`需要 ${stat} ${value} 才能装备此物品`, 'warning');
+                    return false;
+                }
+            }
+        }
+        
+        // 卸下当前装备
+        const currentEquip = gameState.equipment[equipmentType];
+        if (currentEquip) {
+            this.addItem(currentEquip, 1);
+            this.removeEquipmentStats(currentEquip);
+        }
+        
+        // 装备新装备
+        gameState.equipment[equipmentType] = itemName;
+        this.removeItem(itemName, 1);
+        this.applyEquipmentStats(equipmentData);
+        
+        GameSettings.showNotification(`装备了 ${itemName}`, 'success');
+        GameManager.updateUI();
+        return true;
+    },
+    
+    // 应用装备属性
+    applyEquipmentStats(equipment) {
+        const char = gameState.character;
+        
+        if (equipment.attack) char.attack += equipment.attack;
+        if (equipment.defense) char.defense += equipment.defense;
+        if (equipment.strength) char.strength += equipment.strength;
+        if (equipment.agility) char.agility += equipment.agility;
+        if (equipment.intelligence) char.intelligence += equipment.intelligence;
+        if (equipment.constitution) char.constitution += equipment.constitution;
+        if (equipment.hp) char.maxHp += equipment.hp;
+        if (equipment.mp) char.maxMp += equipment.mp;
+    },
+    
+    // 移除装备属性
+    removeEquipmentStats(itemName) {
+        // 查找装备数据并移除属性
+        for (const items of Object.values(GameData.equipment)) {
+            if (items[itemName]) {
+                const equipment = items[itemName];
+                const char = gameState.character;
+                
+                if (equipment.attack) char.attack -= equipment.attack;
+                if (equipment.defense) char.defense -= equipment.defense;
+                if (equipment.strength) char.strength -= equipment.strength;
+                if (equipment.agility) char.agility -= equipment.agility;
+                if (equipment.intelligence) char.intelligence -= equipment.intelligence;
+                if (equipment.constitution) char.constitution -= equipment.constitution;
+                if (equipment.hp) char.maxHp -= equipment.hp;
+                if (equipment.mp) char.maxMp -= equipment.mp;
+                break;
+            }
+        }
+    }
 };

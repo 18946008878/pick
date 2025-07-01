@@ -99,6 +99,10 @@
                     <button class="menu-btn" id="status-btn">状态</button>
                     <button class="menu-btn" id="inventory-btn">背包</button>
                     <button class="menu-btn" id="skills-btn">武功</button>
+                    <button class="menu-btn" id="quests-btn">任务</button>
+                    <button class="menu-btn" id="achievements-btn">成就</button>
+                    <button class="menu-btn" id="shop-btn">商店</button>
+                    <button class="menu-btn" id="map-btn">地图</button>
                     <button class="menu-btn" id="settings-btn">设置</button>
                     <button class="menu-btn" id="save-btn">存档</button>
                 </div>
@@ -106,30 +110,99 @@
 
             <!-- 状态界面 -->
             <div id="status-screen" class="modal">
-                <div class="modal-content">
+                <div class="modal-content status-modal">
                     <span class="close">&times;</span>
-                    <h3>角色状态</h3>
-                    <div id="character-stats">
-                        <div class="stat-row">
-                            <span>等级：</span><span id="level-display">1</span>
+                    <h3>👤 角色状态</h3>
+                    
+                    <div class="character-overview">
+                        <div class="character-portrait">
+                            <div class="character-avatar">🗡️</div>
+                            <div class="character-info">
+                                <h4 id="character-name-display">角色名称</h4>
+                                <p id="character-title-display">无称号</p>
+                                <p id="character-level-display">等级 1</p>
+                            </div>
                         </div>
-                        <div class="stat-row">
-                            <span>经验：</span><span id="exp-display">0/100</span>
-                        </div>
-                        <div class="stat-row">
-                            <span>力量：</span><span id="strength-display">10</span>
-                        </div>
-                        <div class="stat-row">
-                            <span>敏捷：</span><span id="agility-display">10</span>
-                        </div>
-                        <div class="stat-row">
-                            <span>智力：</span><span id="intelligence-display">10</span>
-                        </div>
-                        <div class="stat-row">
-                            <span>体质：</span><span id="constitution-display">10</span>
-                        </div>
-                        <div class="stat-row">
-                            <span>当前位置：</span><span id="location-display">人极星</span>
+                        
+                        <div class="character-stats">
+                            <div class="stat-group">
+                                <h5>基础属性</h5>
+                                <div class="stat-bars">
+                                    <div class="stat-bar">
+                                        <span>生命值</span>
+                                        <div class="bar">
+                                            <div class="bar-fill hp-bar" id="hp-bar"></div>
+                                            <span class="bar-text" id="hp-text">100/100</span>
+                                        </div>
+                                    </div>
+                                    <div class="stat-bar">
+                                        <span>内力值</span>
+                                        <div class="bar">
+                                            <div class="bar-fill mp-bar" id="mp-bar"></div>
+                                            <span class="bar-text" id="mp-text">50/50</span>
+                                        </div>
+                                    </div>
+                                    <div class="stat-bar">
+                                        <span>经验值</span>
+                                        <div class="bar">
+                                            <div class="bar-fill exp-bar" id="exp-bar"></div>
+                                            <span class="bar-text" id="exp-text">0/100</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-group">
+                                <h5>战斗属性</h5>
+                                <div class="combat-stats">
+                                    <div class="stat-item">
+                                        <span>攻击力</span>
+                                        <span id="attack-value">10</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>防御力</span>
+                                        <span id="defense-value">5</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>力量</span>
+                                        <span id="strength-value">10</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>敏捷</span>
+                                        <span id="agility-value">10</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>智力</span>
+                                        <span id="intelligence-value">10</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>体质</span>
+                                        <span id="constitution-value">10</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-group">
+                                <h5>游戏统计</h5>
+                                <div class="game-stats">
+                                    <div class="stat-item">
+                                        <span>胜利次数</span>
+                                        <span id="wins-count">0</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>败北次数</span>
+                                        <span id="losses-count">0</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>击败怪物</span>
+                                        <span id="monsters-killed">0</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span>BOSS击败</span>
+                                        <span id="bosses-defeated">0</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -137,22 +210,161 @@
 
             <!-- 背包界面 -->
             <div id="inventory-screen" class="modal">
-                <div class="modal-content">
+                <div class="modal-content inventory-modal">
                     <span class="close">&times;</span>
-                    <h3>背包</h3>
-                    <div id="inventory-grid">
-                        <!-- 动态生成物品 -->
+                    <h3>🎒 背包</h3>
+                    
+                    <!-- 背包分类标签 -->
+                    <div class="inventory-tabs">
+                        <button class="tab-btn active" data-tab="consumables">💊 消耗品</button>
+                        <button class="tab-btn" data-tab="equipment">⚔️ 装备</button>
+                        <button class="tab-btn" data-tab="materials">🔧 材料</button>
+                        <button class="tab-btn" data-tab="quest">📜 任务物品</button>
+                    </div>
+                    
+                    <!-- 背包内容 -->
+                    <div id="inventory-content">
+                        <!-- 物品内容将通过JavaScript动态加载 -->
+                    </div>
+                    
+                    <!-- 装备栏 -->
+                    <div class="equipment-slots">
+                        <h4>装备栏</h4>
+                        <div class="equipment-grid">
+                            <div class="equipment-slot" data-type="weapon">
+                                <div class="slot-label">武器</div>
+                                <div class="slot-content" id="weapon-slot">空</div>
+                            </div>
+                            <div class="equipment-slot" data-type="armor">
+                                <div class="slot-label">防具</div>
+                                <div class="slot-content" id="armor-slot">空</div>
+                            </div>
+                            <div class="equipment-slot" data-type="accessory">
+                                <div class="slot-label">饰品</div>
+                                <div class="slot-content" id="accessory-slot">空</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- 武功界面 -->
             <div id="skills-screen" class="modal">
+                <div class="modal-content skills-modal">
+                    <span class="close">&times;</span>
+                    <h3>⚡ 武功技能</h3>
+                    
+                    <div class="skill-points">
+                        可用技能点: <span id="available-skill-points">0</span>
+                    </div>
+                    
+                    <!-- 技能分类 -->
+                    <div class="skill-categories">
+                        <div class="skill-category">
+                            <h4>🔥 火系技能</h4>
+                            <div class="skill-list" id="fire-skills">
+                                <!-- 火系技能列表 -->
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>❄️ 冰系技能</h4>
+                            <div class="skill-list" id="ice-skills">
+                                <!-- 冰系技能列表 -->
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>⚡ 雷系技能</h4>
+                            <div class="skill-list" id="lightning-skills">
+                                <!-- 雷系技能列表 -->
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>🌟 特殊技能</h4>
+                            <div class="skill-list" id="special-skills">
+                                <!-- 特殊技能列表 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 任务界面 -->
+            <div id="quests-screen" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
-                    <h3>武功修炼</h3>
-                    <div id="skills-list">
-                        <!-- 动态生成武功列表 -->
+                    <h3>📋 任务日志</h3>
+                    <div id="quest-content">
+                        <!-- 任务内容将通过JavaScript动态加载 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成就界面 -->
+            <div id="achievements-screen" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>🏆 成就系统</h3>
+                    <div id="achievement-content">
+                        <!-- 成就内容将通过JavaScript动态加载 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 商店选择界面 -->
+            <div id="shop-selection-screen" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>🏪 商店</h3>
+                    <div class="shop-selection">
+                        <div class="shop-option" onclick="ShopManager.showShop('generalStore')">
+                            <h4>🏪 杂货店</h4>
+                            <p>购买基础的丹药和装备</p>
+                        </div>
+                        <div class="shop-option" onclick="ShopManager.showShop('weaponShop')">
+                            <h4>⚔️ 武器店</h4>
+                            <p>各种武器和防具</p>
+                        </div>
+                        <div class="shop-option" onclick="ShopManager.showShop('magicShop')">
+                            <h4>🔮 法术商店</h4>
+                            <p>魔法物品和卷轴</p>
+                            <small>需要智力15</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 地图界面 -->
+            <div id="map-screen" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>🗺️ 世界地图</h3>
+                    <div id="map-content">
+                        <div class="realm-selection">
+                            <div class="realm-card" data-realm="humanRealm">
+                                <h4>人极星</h4>
+                                <p>人类聚居的星球</p>
+                                <div class="realm-areas">
+                                    <div class="area-item" data-area="beginnerVillage">新手村</div>
+                                    <div class="area-item" data-area="darkForest">黑暗森林</div>
+                                    <div class="area-item" data-area="shadowCave">暗影洞穴</div>
+                                </div>
+                            </div>
+                            <div class="realm-card" data-realm="dragonRealm">
+                                <h4>火龙域</h4>
+                                <p>火龙族的炽热星球</p>
+                                <div class="realm-areas">
+                                    <div class="area-item" data-area="lavaPlateau">熔岩高原</div>
+                                    <div class="area-item" data-area="dragonLair">龙王巢穴</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="current-location">
+                            当前位置: <span id="current-location-text">人极星 - 新手村</span>
+                        </div>
+                        <div class="exploration-actions">
+                            <button id="explore-btn" onclick="ExplorationManager.exploreCurrentArea()">🔍 探索当前区域</button>
+                            <button id="random-event-btn" onclick="RandomEventManager.triggerRandomEvent()">🎲 随机事件</button>
+                        </div>
                     </div>
                 </div>
             </div>
