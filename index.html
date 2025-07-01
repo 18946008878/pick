@@ -99,6 +99,7 @@
                     <button class="menu-btn" id="status-btn">状态</button>
                     <button class="menu-btn" id="inventory-btn">背包</button>
                     <button class="menu-btn" id="skills-btn">武功</button>
+                    <button class="menu-btn" id="settings-btn">设置</button>
                     <button class="menu-btn" id="save-btn">存档</button>
                 </div>
             </div>
@@ -197,6 +198,212 @@
                         <button class="battle-btn" id="skill-btn">武功</button>
                         <button class="battle-btn" id="item-btn">道具</button>
                         <button class="battle-btn" id="flee-btn">逃跑</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 设置界面 -->
+            <div id="settings-screen" class="modal">
+                <div class="modal-content settings">
+                    <span class="close">&times;</span>
+                    <h3>游戏设置</h3>
+                    
+                    <!-- 显示设置 -->
+                    <div class="settings-section">
+                        <h4>🎨 显示设置</h4>
+                        
+                        <div class="setting-item">
+                            <label for="theme-select">界面主题</label>
+                            <select id="theme-select">
+                                <option value="default">经典武侠</option>
+                                <option value="dark">暗夜江湖</option>
+                                <option value="light">明亮仙境</option>
+                                <option value="purple">紫气东来</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="font-size-slider">文字大小</label>
+                            <input type="range" id="font-size-slider" min="12" max="20" value="14">
+                            <span id="font-size-value">14px</span>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="animations-toggle" checked>
+                                启用动画效果
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="auto-save-toggle" checked>
+                                自动保存游戏
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 游戏设置 -->
+                    <div class="settings-section">
+                        <h4>🎮 游戏设置</h4>
+                        
+                        <div class="setting-item">
+                            <label for="difficulty-select">游戏难度</label>
+                            <select id="difficulty-select">
+                                <option value="easy">简单 (经验+50%, 伤害-25%)</option>
+                                <option value="normal" selected>普通 (标准体验)</option>
+                                <option value="hard">困难 (经验-25%, 伤害+50%)</option>
+                                <option value="expert">专家 (经验-50%, 伤害+100%)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="text-speed-slider">文字速度</label>
+                            <input type="range" id="text-speed-slider" min="10" max="100" value="30">
+                            <span id="text-speed-value">正常</span>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="confirm-actions-toggle" checked>
+                                重要操作确认
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="battle-auto-toggle">
+                                战斗自动模式
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 音效设置 -->
+                    <div class="settings-section">
+                        <h4>🔊 音效设置</h4>
+                        
+                        <div class="setting-item">
+                            <label for="master-volume-slider">主音量</label>
+                            <input type="range" id="master-volume-slider" min="0" max="100" value="70">
+                            <span id="master-volume-value">70%</span>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="bgm-volume-slider">背景音乐</label>
+                            <input type="range" id="bgm-volume-slider" min="0" max="100" value="50">
+                            <span id="bgm-volume-value">50%</span>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="sfx-volume-slider">音效</label>
+                            <input type="range" id="sfx-volume-slider" min="0" max="100" value="80">
+                            <span id="sfx-volume-value">80%</span>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="vibration-toggle" checked>
+                                震动反馈 (手机)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 辅助功能 -->
+                    <div class="settings-section">
+                        <h4>♿ 辅助功能</h4>
+                        
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="high-contrast-toggle">
+                                高对比度模式
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="large-buttons-toggle">
+                                大按钮模式
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label>
+                                <input type="checkbox" id="screen-reader-toggle">
+                                屏幕阅读器支持
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="button-delay-slider">按钮延迟</label>
+                            <input type="range" id="button-delay-slider" min="0" max="2000" value="0">
+                            <span id="button-delay-value">0ms</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 数据管理 -->
+                    <div class="settings-section">
+                        <h4>💾 数据管理</h4>
+                        
+                        <div class="setting-buttons">
+                            <button class="setting-btn" id="export-save-btn">导出存档</button>
+                            <button class="setting-btn" id="import-save-btn">导入存档</button>
+                            <input type="file" id="import-save-file" accept=".json" style="display: none;">
+                        </div>
+                        
+                        <div class="setting-buttons">
+                            <button class="setting-btn" id="reset-settings-btn">重置设置</button>
+                            <button class="setting-btn danger" id="clear-data-btn">清除所有数据</button>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <small>存档大小: <span id="save-size">0 KB</span></small>
+                        </div>
+                    </div>
+                    
+                    <!-- 游戏信息 -->
+                    <div class="settings-section">
+                        <h4>ℹ️ 游戏信息</h4>
+                        <div class="game-info">
+                            <p><strong>破天一剑</strong> v1.0.0</p>
+                            <p>文字版武侠RPG手机游戏</p>
+                            <p>游戏时长: <span id="play-time">0 分钟</span></p>
+                            <p>创建时间: <span id="save-date">未知</span></p>
+                            <p><a href="#" id="about-game-btn">关于游戏</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 关于游戏对话框 -->
+            <div id="about-screen" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>关于破天一剑</h3>
+                    <div class="about-content">
+                        <p><strong>🗡️ 破天一剑 - 文字版武侠RPG</strong></p>
+                        <p>版本: 1.0.0</p>
+                        <br>
+                        <p>这是一款基于经典武侠漫画《破天一剑》的文字版手机游戏。</p>
+                        <br>
+                        <p><strong>✨ 游戏特色:</strong></p>
+                        <ul>
+                            <li>🎭 四大职业，各具特色</li>
+                            <li>📖 丰富剧情，分支选择</li>
+                            <li>⚔️ 策略战斗，武功修炼</li>
+                            <li>🎒 装备收集，角色成长</li>
+                            <li>🌟 十二星宿，宇宙冒险</li>
+                        </ul>
+                        <br>
+                        <p><strong>🎯 游戏目标:</strong></p>
+                        <p>寻找破天剑、破天牌、破天秘笈三件亘古圣物，击败逆天之神，拯救宇宙！</p>
+                        <br>
+                        <p><strong>🎮 开发技术:</strong></p>
+                        <p>HTML5 + CSS3 + JavaScript</p>
+                        <br>
+                        <p><strong>📧 反馈建议:</strong></p>
+                        <p>欢迎提供游戏建议和bug反馈！</p>
+                        <br>
+                        <p class="copyright">© 2024 破天一剑工作室</p>
                     </div>
                 </div>
             </div>

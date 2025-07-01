@@ -741,3 +741,638 @@ class Game {
 document.addEventListener('DOMContentLoaded', () => {
     window.game = new Game();
 });
+
+// 游戏设置管理
+const GameSettings = {
+    // 默认设置
+    defaults: {
+        theme: 'default',
+        fontSize: 14,
+        animations: true,
+        autoSave: true,
+        difficulty: 'normal',
+        textSpeed: 30,
+        confirmActions: true,
+        battleAuto: false,
+        masterVolume: 70,
+        bgmVolume: 50,
+        sfxVolume: 80,
+        vibration: true,
+        highContrast: false,
+        largeButtons: false,
+        screenReader: false,
+        buttonDelay: 0
+    },
+    
+    // 当前设置
+    current: {},
+    
+    // 初始化设置
+    init() {
+        const saved = localStorage.getItem('game_settings');
+        if (saved) {
+            this.current = { ...this.defaults, ...JSON.parse(saved) };
+        } else {
+            this.current = { ...this.defaults };
+        }
+        this.apply();
+    },
+    
+    // 保存设置
+    save() {
+        localStorage.setItem('game_settings', JSON.stringify(this.current));
+        this.showNotification('设置已保存', 'success');
+    },
+    
+    // 应用设置
+    apply() {
+        this.applyTheme();
+        this.applyFontSize();
+        this.applyAnimations();
+        this.applyAccessibility();
+        this.applyButtonDelay();
+    },
+    
+    // 应用主题
+    applyTheme() {
+        const body = document.body;
+        body.className = body.className.replace(/theme-\w+/g, '');
+        if (this.current.theme !== 'default') {
+            body.classList.add(`theme-${this.current.theme}`);
+        }
+    },
+    
+    // 应用字体大小
+    applyFontSize() {
+        document.documentElement.style.setProperty('--base-font-size', `${this.current.fontSize}px`);
+    },
+    
+    // 应用动画设置
+    applyAnimations() {
+        if (!this.current.animations) {
+            document.body.classList.add('no-animations');
+        } else {
+            document.body.classList.remove('no-animations');
+        }
+    },
+    
+    // 应用辅助功能设置
+    applyAccessibility() {
+        const body = document.body;
+        
+        // 高对比度
+        if (this.current.highContrast) {
+            body.classList.add('high-contrast');
+        } else {
+            body.classList.remove('high-contrast');
+        }
+        
+        // 大按钮模式
+        if (this.current.largeButtons) {
+            body.classList.add('large-buttons');
+        } else {
+            body.classList.remove('large-buttons');
+        }
+        
+        // 屏幕阅读器支持
+        if (this.current.screenReader) {
+            body.classList.add('screen-reader-mode');
+        } else {
+            body.classList.remove('screen-reader-mode');
+        }
+    },
+    
+    // 应用按钮延迟
+    applyButtonDelay() {
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            if (this.current.buttonDelay > 0) {
+                button.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    button.style.pointerEvents = 'auto';
+                }, this.current.buttonDelay);
+            }
+        });
+    },
+    
+    // 重置设置
+    reset() {
+        this.current = { ...this.defaults };
+        this.save();
+        this.apply();
+        this.updateSettingsUI();
+        this.showNotification('设置已重置为默认值', 'success');
+    },
+    
+    // 更新设置界面
+    updateSettingsUI() {
+        // 更新所有设置控件的值
+        document.getElementById('theme-select').value = this.current.theme;
+        document.getElementById('font-size-slider').value = this.current.fontSize;
+        document.getElementById('font-size-value').textContent = `${this.current.fontSize}px`;
+        document.getElementById('animations-toggle').checked = this.current.animations;
+        document.getElementById('auto-save-toggle').checked = this.current.autoSave;
+        document.getElementById('difficulty-select').value = this.current.difficulty;
+        document.getElementById('text-speed-slider').value = this.current.textSpeed;
+        document.getElementById('text-speed-value').textContent = this.getTextSpeedLabel(this.current.textSpeed);
+        document.getElementById('confirm-actions-toggle').checked = this.current.confirmActions;
+        document.getElementById('battle-auto-toggle').checked = this.current.battleAuto;
+        document.getElementById('master-volume-slider').value = this.current.masterVolume;
+        document.getElementById('master-volume-value').textContent = `${this.current.masterVolume}%`;
+        document.getElementById('bgm-volume-slider').value = this.current.bgmVolume;
+        document.getElementById('bgm-volume-value').textContent = `${this.current.bgmVolume}%`;
+        document.getElementById('sfx-volume-slider').value = this.current.sfxVolume;
+        document.getElementById('sfx-volume-value').textContent = `${this.current.sfxVolume}%`;
+        document.getElementById('vibration-toggle').checked = this.current.vibration;
+        document.getElementById('high-contrast-toggle').checked = this.current.highContrast;
+        document.getElementById('large-buttons-toggle').checked = this.current.largeButtons;
+        document.getElementById('screen-reader-toggle').checked = this.current.screenReader;
+        document.getElementById('button-delay-slider').value = this.current.buttonDelay;
+        document.getElementById('button-delay-value').textContent = `${this.current.buttonDelay}ms`;
+    },
+    
+    // 获取文字速度标签
+    getTextSpeedLabel(value) {
+        if (value <= 20) return '慢';
+        if (value <= 40) return '正常';
+        if (value <= 60) return '快';
+        return '极快';
+    },
+    
+    // 显示通知
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    },
+    
+    // 确认对话框
+    showConfirm(title, message, onConfirm, onCancel = null) {
+        if (!this.current.confirmActions) {
+            onConfirm();
+            return;
+        }
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'modal';
+        overlay.style.display = 'block';
+        
+        const dialog = document.createElement('div');
+        dialog.className = 'confirm-dialog';
+        dialog.innerHTML = `
+            <h4>${title}</h4>
+            <p>${message}</p>
+            <div class="buttons">
+                <button class="btn-confirm">确认</button>
+                <button class="btn-cancel">取消</button>
+            </div>
+        `;
+        
+        overlay.appendChild(dialog);
+        document.body.appendChild(overlay);
+        
+        const confirmBtn = dialog.querySelector('.btn-confirm');
+        const cancelBtn = dialog.querySelector('.btn-cancel');
+        
+        confirmBtn.onclick = () => {
+            overlay.remove();
+            onConfirm();
+        };
+        
+        cancelBtn.onclick = () => {
+            overlay.remove();
+            if (onCancel) onCancel();
+        };
+        
+        overlay.onclick = (e) => {
+            if (e.target === overlay) {
+                overlay.remove();
+                if (onCancel) onCancel();
+            }
+        };
+    },
+    
+    // 导出存档
+    exportSave() {
+        const gameData = {
+            character: gameState.character,
+            inventory: gameState.inventory,
+            currentScene: gameState.currentScene,
+            gameFlags: gameState.gameFlags,
+            playTime: gameState.playTime || 0,
+            saveDate: new Date().toISOString(),
+            settings: this.current
+        };
+        
+        const dataStr = JSON.stringify(gameData, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = `破天一剑存档_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+        link.click();
+        
+        this.showNotification('存档导出成功！', 'success');
+    },
+    
+    // 导入存档
+    importSave(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const gameData = JSON.parse(e.target.result);
+                
+                // 验证存档数据
+                if (!gameData.character || !gameData.inventory) {
+                    throw new Error('无效的存档文件');
+                }
+                
+                this.showConfirm(
+                    '导入存档',
+                    '这将覆盖当前游戏进度，确定要导入存档吗？',
+                    () => {
+                        // 恢复游戏数据
+                        gameState.character = gameData.character;
+                        gameState.inventory = gameData.inventory;
+                        gameState.currentScene = gameData.currentScene || 'start';
+                        gameState.gameFlags = gameData.gameFlags || {};
+                        gameState.playTime = gameData.playTime || 0;
+                        
+                        // 恢复设置
+                        if (gameData.settings) {
+                            this.current = { ...this.defaults, ...gameData.settings };
+                            this.apply();
+                            this.updateSettingsUI();
+                        }
+                        
+                        // 保存到本地存储
+                        GameManager.saveGame();
+                        this.save();
+                        
+                        // 刷新界面
+                        GameManager.updateUI();
+                        GameManager.changeScene(gameState.currentScene);
+                        
+                        this.showNotification('存档导入成功！', 'success');
+                    }
+                );
+            } catch (error) {
+                this.showNotification('存档文件格式错误！', 'error');
+                console.error('Import error:', error);
+            }
+        };
+        reader.readAsText(file);
+    },
+    
+    // 清除所有数据
+    clearAllData() {
+        this.showConfirm(
+            '清除所有数据',
+            '这将删除所有游戏进度和设置，此操作不可恢复！',
+            () => {
+                localStorage.clear();
+                this.showNotification('所有数据已清除，页面将刷新', 'warning');
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        );
+    },
+    
+    // 更新存档大小显示
+    updateSaveSize() {
+        const saveData = localStorage.getItem('gameState') || '';
+        const settingsData = localStorage.getItem('game_settings') || '';
+        const totalSize = (saveData.length + settingsData.length) * 2; // 估算字节数
+        const sizeKB = (totalSize / 1024).toFixed(1);
+        document.getElementById('save-size').textContent = `${sizeKB} KB`;
+    },
+    
+    // 更新游戏时长显示
+    updatePlayTime() {
+        const playTime = gameState.playTime || 0;
+        const minutes = Math.floor(playTime / 60000);
+        const hours = Math.floor(minutes / 60);
+        
+        let timeStr;
+        if (hours > 0) {
+            timeStr = `${hours}小时${minutes % 60}分钟`;
+        } else {
+            timeStr = `${minutes}分钟`;
+        }
+        
+        document.getElementById('play-time').textContent = timeStr;
+    },
+    
+    // 更新存档创建时间
+    updateSaveDate() {
+        const saveData = localStorage.getItem('gameState');
+        if (saveData) {
+            try {
+                const data = JSON.parse(saveData);
+                const saveDate = data.saveDate ? new Date(data.saveDate).toLocaleString() : '未知';
+                document.getElementById('save-date').textContent = saveDate;
+            } catch (e) {
+                document.getElementById('save-date').textContent = '未知';
+            }
+        }
+    }
+};
+
+// 震动反馈函数
+function vibrate(pattern = [100]) {
+    if (GameSettings.current.vibration && navigator.vibrate) {
+        navigator.vibrate(pattern);
+    }
+}
+
+// 游戏时长追踪
+let gameStartTime = Date.now();
+let lastSaveTime = Date.now();
+
+function updatePlayTime() {
+    if (!gameState.playTime) gameState.playTime = 0;
+    const currentTime = Date.now();
+    gameState.playTime += currentTime - lastSaveTime;
+    lastSaveTime = currentTime;
+}
+
+// 在原有的 GameManager.init 函数中添加设置初始化
+const originalInit = GameManager.init;
+GameManager.init = function() {
+    originalInit.call(this);
+    GameSettings.init();
+    
+    // 绑定设置界面事件
+    this.bindSettingsEvents();
+    
+    // 自动保存定时器
+    if (GameSettings.current.autoSave) {
+        setInterval(() => {
+            updatePlayTime();
+            this.saveGame();
+        }, 60000); // 每分钟自动保存
+    }
+};
+
+// 绑定设置界面事件
+GameManager.bindSettingsEvents = function() {
+    // 设置按钮
+    const settingsBtn = document.getElementById('settings-btn');
+    if (settingsBtn) {
+        settingsBtn.onclick = () => {
+            vibrate();
+            const settingsScreen = document.getElementById('settings-screen');
+            settingsScreen.style.display = 'block';
+            GameSettings.updateSettingsUI();
+            GameSettings.updateSaveSize();
+            GameSettings.updatePlayTime();
+            GameSettings.updateSaveDate();
+        };
+    }
+    
+    // 关闭设置界面
+    const settingsClose = document.querySelector('#settings-screen .close');
+    if (settingsClose) {
+        settingsClose.onclick = () => {
+            document.getElementById('settings-screen').style.display = 'none';
+        };
+    }
+    
+    // 主题选择
+    const themeSelect = document.getElementById('theme-select');
+    if (themeSelect) {
+        themeSelect.onchange = (e) => {
+            GameSettings.current.theme = e.target.value;
+            GameSettings.applyTheme();
+            GameSettings.save();
+            vibrate();
+        };
+    }
+    
+    // 字体大小
+    const fontSizeSlider = document.getElementById('font-size-slider');
+    if (fontSizeSlider) {
+        fontSizeSlider.oninput = (e) => {
+            const value = parseInt(e.target.value);
+            GameSettings.current.fontSize = value;
+            document.getElementById('font-size-value').textContent = `${value}px`;
+            GameSettings.applyFontSize();
+        };
+        
+        fontSizeSlider.onchange = () => {
+            GameSettings.save();
+            vibrate();
+        };
+    }
+    
+    // 动画开关
+    const animationsToggle = document.getElementById('animations-toggle');
+    if (animationsToggle) {
+        animationsToggle.onchange = (e) => {
+            GameSettings.current.animations = e.target.checked;
+            GameSettings.applyAnimations();
+            GameSettings.save();
+            vibrate();
+        };
+    }
+    
+    // 自动保存
+    const autoSaveToggle = document.getElementById('auto-save-toggle');
+    if (autoSaveToggle) {
+        autoSaveToggle.onchange = (e) => {
+            GameSettings.current.autoSave = e.target.checked;
+            GameSettings.save();
+            vibrate();
+        };
+    }
+    
+    // 游戏难度
+    const difficultySelect = document.getElementById('difficulty-select');
+    if (difficultySelect) {
+        difficultySelect.onchange = (e) => {
+            GameSettings.current.difficulty = e.target.value;
+            GameSettings.save();
+            GameSettings.showNotification('难度设置已更新，将在下次战斗生效', 'info');
+            vibrate();
+        };
+    }
+    
+    // 文字速度
+    const textSpeedSlider = document.getElementById('text-speed-slider');
+    if (textSpeedSlider) {
+        textSpeedSlider.oninput = (e) => {
+            const value = parseInt(e.target.value);
+            GameSettings.current.textSpeed = value;
+            document.getElementById('text-speed-value').textContent = GameSettings.getTextSpeedLabel(value);
+        };
+        
+        textSpeedSlider.onchange = () => {
+            GameSettings.save();
+            vibrate();
+        };
+    }
+    
+    // 操作确认
+    const confirmActionsToggle = document.getElementById('confirm-actions-toggle');
+    if (confirmActionsToggle) {
+        confirmActionsToggle.onchange = (e) => {
+            GameSettings.current.confirmActions = e.target.checked;
+            GameSettings.save();
+            vibrate();
+        };
+    }
+    
+    // 战斗自动模式
+    const battleAutoToggle = document.getElementById('battle-auto-toggle');
+    if (battleAutoToggle) {
+        battleAutoToggle.onchange = (e) => {
+            GameSettings.current.battleAuto = e.target.checked;
+            GameSettings.save();
+            vibrate();
+        };
+    }
+    
+    // 音量滑块
+    const volumeSliders = ['master-volume', 'bgm-volume', 'sfx-volume'];
+    volumeSliders.forEach(sliderId => {
+        const slider = document.getElementById(`${sliderId}-slider`);
+        if (slider) {
+            const settingKey = sliderId.replace('-', '').replace('slider', '') + 'Volume';
+            
+            slider.oninput = (e) => {
+                const value = parseInt(e.target.value);
+                GameSettings.current[settingKey] = value;
+                document.getElementById(`${sliderId.replace('slider', 'value')}`).textContent = `${value}%`;
+            };
+            
+            slider.onchange = () => {
+                GameSettings.save();
+                vibrate();
+            };
+        }
+    });
+    
+    // 震动开关
+    const vibrationToggle = document.getElementById('vibration-toggle');
+    if (vibrationToggle) {
+        vibrationToggle.onchange = (e) => {
+            GameSettings.current.vibration = e.target.checked;
+            GameSettings.save();
+            if (e.target.checked) vibrate();
+        };
+    }
+    
+    // 辅助功能开关
+    const accessibilityToggles = [
+        { id: 'high-contrast-toggle', key: 'highContrast' },
+        { id: 'large-buttons-toggle', key: 'largeButtons' },
+        { id: 'screen-reader-toggle', key: 'screenReader' }
+    ];
+    
+    accessibilityToggles.forEach(({ id, key }) => {
+        const toggle = document.getElementById(id);
+        if (toggle) {
+            toggle.onchange = (e) => {
+                GameSettings.current[key] = e.target.checked;
+                GameSettings.applyAccessibility();
+                GameSettings.save();
+                vibrate();
+            };
+        }
+    });
+    
+    // 按钮延迟
+    const buttonDelaySlider = document.getElementById('button-delay-slider');
+    if (buttonDelaySlider) {
+        buttonDelaySlider.oninput = (e) => {
+            const value = parseInt(e.target.value);
+            GameSettings.current.buttonDelay = value;
+            document.getElementById('button-delay-value').textContent = `${value}ms`;
+        };
+        
+        buttonDelaySlider.onchange = () => {
+            GameSettings.save();
+            vibrate();
+        };
+    }
+    
+    // 数据管理按钮
+    const exportSaveBtn = document.getElementById('export-save-btn');
+    if (exportSaveBtn) {
+        exportSaveBtn.onclick = () => {
+            vibrate();
+            GameSettings.exportSave();
+        };
+    }
+    
+    const importSaveBtn = document.getElementById('import-save-btn');
+    const importSaveFile = document.getElementById('import-save-file');
+    if (importSaveBtn && importSaveFile) {
+        importSaveBtn.onclick = () => {
+            vibrate();
+            importSaveFile.click();
+        };
+        
+        importSaveFile.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                GameSettings.importSave(file);
+            }
+            e.target.value = ''; // 清除文件选择
+        };
+    }
+    
+    const resetSettingsBtn = document.getElementById('reset-settings-btn');
+    if (resetSettingsBtn) {
+        resetSettingsBtn.onclick = () => {
+            vibrate();
+            GameSettings.showConfirm(
+                '重置设置',
+                '确定要将所有设置重置为默认值吗？',
+                () => GameSettings.reset()
+            );
+        };
+    }
+    
+    const clearDataBtn = document.getElementById('clear-data-btn');
+    if (clearDataBtn) {
+        clearDataBtn.onclick = () => {
+            vibrate([200, 100, 200]);
+            GameSettings.clearAllData();
+        };
+    }
+    
+    // 关于游戏
+    const aboutGameBtn = document.getElementById('about-game-btn');
+    const aboutScreen = document.getElementById('about-screen');
+    if (aboutGameBtn && aboutScreen) {
+        aboutGameBtn.onclick = (e) => {
+            e.preventDefault();
+            vibrate();
+            aboutScreen.style.display = 'block';
+        };
+        
+        const aboutClose = aboutScreen.querySelector('.close');
+        if (aboutClose) {
+            aboutClose.onclick = () => {
+                aboutScreen.style.display = 'none';
+            };
+        }
+    }
+    
+    // 点击模态框外部关闭
+    window.onclick = (e) => {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    };
+};
